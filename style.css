@@ -104,6 +104,30 @@ display: inline-block;
   margin-top: 10px;
 }
 
+.difficulty-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.difficulty-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #2E9DF7;
+  border-radius: 8px;
+  background-color: #FFF;
+  color: #333;
+  font: inherit;
+  cursor: pointer;
+}
+
+.difficulty-select:focus {
+  outline: 3px solid rgba(255, 201, 7, 0.5);
+  outline-offset: 2px;
+}
+
 .brand-header {
   display: flex;
   align-items: center;
