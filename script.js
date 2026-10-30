@@ -2,7 +2,7 @@
 const difficultySettings = {
   easy: {
     goalScore: 4000,
-    startingTime: 10,
+    startingTime: 60,
     rockPenalty: 100,
     spawnRate: 750,
     expirationTime: 1750,
