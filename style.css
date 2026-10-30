@@ -286,7 +286,7 @@ h1 img {
   border: 3px solid #FFF7E1;
   border-radius: 50%;
   background-color: #77A8BB;
-  color: #FFC907;
+  color: #fff;
   box-shadow: 0 0 0 2px #77A8BB;
   font-size: 15px;
   transition: transform 0.2s ease, background-color 0.2s ease;
@@ -302,7 +302,7 @@ h1 img {
 .goal-marker {
   left: 100%;
   top: calc(50% - 4px);
-  color: #FF902A;
+  color: #fff;
   font-size: 30px;
   line-height: 1;
   transition: transform 0.2s ease;
@@ -310,6 +310,7 @@ h1 img {
 
 .goal-marker.reached {
   transform: translate(-50%, -50%) scale(1.5);
+  color: #FF902A;
 }
 
 @keyframes milestone-pop {
