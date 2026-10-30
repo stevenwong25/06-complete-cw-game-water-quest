@@ -156,7 +156,13 @@ function getRockChance() {
 
 // Creates the 3x3 game grid where items will appear
 function createGrid() {
-  const grid = document.querySelector('.game-grid');
+  let grid = document.querySelector('.game-grid');
+  if (!grid) {
+    grid = document.createElement('div');
+    grid.className = 'game-grid';
+    document.querySelector('main').insertBefore(grid, document.getElementById('start-game'));
+    grid.addEventListener('click', handleGridClick);
+  }
   grid.innerHTML = ''; // Clear any existing grid cells
   for (let i = 0; i < 9; i++) {
     const cell = document.createElement('div');
@@ -296,7 +302,7 @@ function endGame() {
   clearInterval(timerInterval); // Stop counting down the game
   clearInterval(countdownInterval);
   document.querySelector('.countdown-overlay')?.remove();
-  document.querySelector('.game-grid').classList.remove('paused');
+  document.querySelector('.game-grid')?.remove();
   const messages = currentScore >= activeDifficulty.goalScore ? winningMessages : losingMessages;
   const resultMessage = messages[Math.floor(Math.random() * messages.length)];
   document.getElementById('result-message').textContent = resultMessage;
@@ -336,7 +342,6 @@ function resetGame() {
   document.getElementById('confetti-container')?.remove();
   document.getElementById('reset-game')?.remove();
   document.querySelector('.countdown-overlay')?.remove();
-  document.querySelector('.game-grid').classList.remove('paused');
   createGrid();
 
   const startButton = document.createElement('button');
@@ -368,7 +373,7 @@ function playConfetti() {
 }
 
 // Updates points appropriately when the active water can or rock is clicked
-document.querySelector('.game-grid').addEventListener('click', event => {
+function handleGridClick(event) {
   if (!gameActive || gamePaused || !(event.target instanceof Element)) return;
 
   const item = event.target.closest('.water-can, .rock');
@@ -385,7 +390,7 @@ document.querySelector('.game-grid').addEventListener('click', event => {
   document.getElementById('current-score').textContent = currentScore;
   shrinkWaterCan(item);
   updateProgress();
-});
+}
 
 function handleGameButtonClick() {
   if (!gameActive) {
@@ -397,6 +402,7 @@ function handleGameButtonClick() {
   }
 }
 
-// Set up click handler for the game control button
+// Set up click handlers for the game controls
+document.querySelector('.game-grid').addEventListener('click', handleGridClick);
 document.getElementById('start-game').addEventListener('click', handleGameButtonClick);
 document.getElementById('difficulty').addEventListener('change', updateDifficultyDisplay);
