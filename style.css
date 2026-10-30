@@ -199,11 +199,11 @@ h1 img {
   z-index: 1;
 }
 
-.milestone-one {
+.milestone-1 {
   left: 33.333%;
 }
 
-.milestone-two {
+.milestone-2 {
   left: 66.667%;
 }
 
@@ -216,7 +216,7 @@ h1 img {
   border: 3px solid #FFF7E1;
   border-radius: 50%;
   background-color: #77A8BB;
-  color: #FFF7E1;
+  color: #FFC907;
   box-shadow: 0 0 0 2px #77A8BB;
   font-size: 15px;
   transition: transform 0.2s ease, background-color 0.2s ease;
@@ -226,26 +226,31 @@ h1 img {
   background-color: #FFC907;
   color: #333;
   animation: milestone-pop 0.55s ease-out;
+  transform: scale(1.25);
 }
 
 .goal-marker {
   left: 100%;
-  color: #159A48;
+  top: calc(50% - 4px);
+  color: #FF902A;
   font-size: 30px;
   line-height: 1;
   transition: transform 0.2s ease;
 }
 
 .goal-marker.reached {
-  transform: translate(-50%, -50%) scale(1.35);
+  transform: translate(-50%, -50%) scale(1.5);
 }
 
 @keyframes milestone-pop {
-  0%, 100% {
+  0% {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.45);
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1.25);
   }
 }
 

@@ -40,18 +40,26 @@ function updateProgress() {
   document.getElementById('progressbar').style.width = `${progress}%`;
 
   MILESTONE_SCORES.forEach((milestoneScore, index) => {
-    if (currentScore < milestoneScore || reachedMilestones.has(index)) return;
+    const milestone = document.querySelector(`.milestone-${index + 1}`);
+    const milestoneReached = currentScore >= milestoneScore;
+
+    if (!milestoneReached) {
+      reachedMilestones.delete(index);
+      milestone.classList.remove('reached');
+      return;
+    }
+
+    if (reachedMilestones.has(index)) return;
 
     reachedMilestones.add(index);
-    const milestone = document.querySelector(`.milestone-${index + 1}`);
     milestone.classList.add('reached');
-    milestone.addEventListener('animationend', () => {
-      milestone.classList.remove('reached');
-    }, { once: true });
   });
 
+  const goalMarker = document.getElementById('goal-marker');
   if (currentScore >= GOAL_SCORE) {
-    document.getElementById('goal-marker').classList.add('reached');
+    goalMarker.classList.add('reached');
+  } else {
+    goalMarker.classList.remove('reached');
   }
 }
 
@@ -212,14 +220,13 @@ function endGame() {
     cell.innerHTML = '';
   });
 
-  const resetButton = document.getElementById('reset-game');
-  if (!resetButton) {
-    const button = document.createElement('button');
-    button.id = 'reset-game';
-    button.textContent = 'Reset Game';
-    button.addEventListener('click', resetGame);
-    document.querySelector('.container').appendChild(button);
-  }
+  const gameButton = document.getElementById('start-game');
+  gameButton.id = 'reset-game';
+  gameButton.textContent = 'Reset Game';
+  gameButton.classList.remove('pause-state');
+  gameButton.disabled = false;
+  gameButton.removeEventListener('click', handleGameButtonClick);
+  gameButton.addEventListener('click', resetGame);
 }
 
 function resetGame() {
@@ -287,8 +294,8 @@ document.querySelector('.game-grid').addEventListener('click', event => {
   }
   currentScore += isWaterCan ? 100 : -200;
   document.getElementById('current-score').textContent = currentScore;
-  updateProgress();
   shrinkWaterCan(item);
+  updateProgress();
 });
 
 function handleGameButtonClick() {
