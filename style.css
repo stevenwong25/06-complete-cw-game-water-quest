@@ -13,8 +13,10 @@ Secondary Colors:
 - Pink:       #F16061
 
 Fonts:
-- Proxima Nova Alt: Montserrat
-- Avenir Alt: Nunito Sans
+- Proxima Nova 
+  Alt: Montserrat
+- Avenir 
+  Alt: Nunito Sans
 
 */
 
@@ -23,7 +25,7 @@ Fonts:
 }
 
 body {
-  font-family: "Montserrat", "Proxima Nova", Arial, sans-serif;
+  font-family: "Proxima Nova","Montserrat", Arial, sans-serif;
   margin: 0;
   padding: 30px;
   background-color: #77A8BB;
@@ -60,18 +62,30 @@ body {
   padding: 18px 20px;
   row-gap: 22px;
   border-radius: 8px;
-  background-color: #FED8C1;
+  background-color: #FFF7E1;
   color: #159A48;
   font-size: 15px;
   font-weight: bold;
 }
 
-.footer-placeholder {
+.footer-heading {
   flex-basis: 100%;
   margin: 0;
-  color: #2E9DF7;
+  color: black;
   font-size: 15px;
   text-align: center;
+}
+
+.footer-blue-text {
+  color: #2E9DF7;
+}
+
+.footer-orange-text {
+  color: #FF902A;
+}
+
+.footer-green-text {
+  color: #159A48;
 }
 
 .game-footer a {
@@ -193,16 +207,18 @@ display: inline-block;
 }
 
 .brand-header img {
-  width: 64px;
-  height: auto;
+  width: auto;
+  height: 48px;
   display: block;
 }
 
 .brand-header span {
-  color: #333;
-  font-size: 20px;
-  font-weight: bold;
+  color: #000000;
+  font-size: 30px;
+  letter-spacing: 0.1em;
+  font-weight: 500;
   white-space: nowrap;
+  font-family: "Baskervville", "Nunito Sans", Arial, sans-serif;
 }
 
 h1 {
@@ -210,7 +226,7 @@ h1 {
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 20px;
-  color: #333;
+  color: #2E9DF7;
 }
 
 h1 img {
@@ -310,7 +326,7 @@ h1 img {
 
 .result-message {
   color: #333;
-  font-family: "Nunito Sans", "Proxima Nova", Arial, sans-serif;
+  font-family: "Avenir", "Proxima Nova", "Nunito Sans", Arial, sans-serif;
   font-size: 20px;
   font-weight: bold;
   margin: 0 0 20px;
@@ -532,7 +548,8 @@ button:focus-visible:not(:disabled) {
   }
 
   .brand-header img {
-    width: min(250px, 55vw);
+    width: auto;
+    height: 24px;
   }
 
   h1 {
