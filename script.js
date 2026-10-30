@@ -20,19 +20,50 @@ let countdownInterval;       // Holds the interval for the resume countdown
 let time = 60;                 // Total time for the game in seconds
 let confettiPlayed = false;
 const reachedMilestones = new Set();
+const audioContext = new AudioContext();
+const soundBuffers = {};
+
+const soundsReady = Promise.all([
+  loadSound('pop', 'sounds/pop.mp3'),
+  loadSound('thud', 'sounds/thud.mp3')
+]);
+
+async function loadSound(name, url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Unable to load sound: ${url}`);
+  }
+  const audioData = await response.arrayBuffer();
+  soundBuffers[name] = await audioContext.decodeAudioData(audioData);
+}
+
+async function playSound(name) {
+  await soundsReady;
+
+  if (audioContext.state === 'suspended') {
+    await audioContext.resume();
+  }
+
+  const source = audioContext.createBufferSource();
+  source.buffer = soundBuffers[name];
+  source.connect(audioContext.destination);
+  source.start();
+}
 
 function playPopSound() {
-  const popSound = new Audio('sounds/pop.mp3');
-  popSound.play().catch(error => {
+  playSound('pop').catch(error => {
     console.error('Unable to play the water-can sound.', error);
   });
 }
 
 function playThudSound() {
-  const thudSound = new Audio('sounds/thud.mp3');
-  thudSound.play().catch(error => {
+  playSound('thud').catch(error => {
     console.error('Unable to play the rock sound.', error);
   });
+}
+
+function setDifficultyEnabled(enabled) {
+  document.getElementById('difficulty').disabled = !enabled;
 }
 
 function updateProgress() {
@@ -134,6 +165,7 @@ function startGame() {
   createGrid(); // Set up the game grid
   gameActive = true;
   gamePaused = false;
+  setDifficultyEnabled(false);
   const gameButton = document.getElementById('start-game');
   gameButton.textContent = 'Pause Game';
   gameButton.classList.add('pause-state');
@@ -204,6 +236,7 @@ function continueGame() {
 function endGame() {
   gameActive = false; // Mark the game as inactive
   gamePaused = false;
+  setDifficultyEnabled(true);
   clearInterval(spawnInterval); // Stop spawning water cans
   clearInterval(timerInterval); // Stop counting down the game
   clearInterval(countdownInterval);
@@ -235,6 +268,7 @@ function resetGame() {
   clearInterval(countdownInterval);
   gameActive = false;
   gamePaused = false;
+  setDifficultyEnabled(true);
   currentScore = 0;
   time = 60;
   confettiPlayed = false;

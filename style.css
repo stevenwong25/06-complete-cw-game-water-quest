@@ -13,8 +13,8 @@ Secondary Colors:
 - Pink:       #F16061
 
 Fonts:
-- Proxima Nova
-- Avenir
+- Proxima Nova Alt: Montserrat
+- Avenir Alt: Nunito Sans
 
 */
 
@@ -23,7 +23,7 @@ Fonts:
 }
 
 body {
-  font-family: "Avenir", "Proxima Nova", Arial, sans-serif;
+  font-family: "Montserrat", "Proxima Nova", Arial, sans-serif;
   margin: 0;
   padding: 30px;
   background-color: #77A8BB;
@@ -63,12 +63,14 @@ body {
   margin: 0 0 16px;
   color: #333;
   font-size: 24px;
+  font-weight: bold;
 }
 
 .sidebar h3 {
   margin: 0 0 8px;
   color: #333;
   font-size: 17px;
+  font-weight: bold;
 }
 
 .sidebar p {
@@ -115,7 +117,6 @@ display: inline-block;
 .difficulty-select {
   width: 100%;
   padding: 10px 12px;
-  border: 2px solid #2E9DF7;
   border-radius: 8px;
   background-color: #FFF;
   color: #333;
@@ -126,6 +127,14 @@ display: inline-block;
 .difficulty-select:focus {
   outline: 3px solid rgba(255, 201, 7, 0.5);
   outline-offset: 2px;
+}
+
+.difficulty-select:disabled {
+  border-color: #999;
+  background-color: #e6e6e6;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 1;
 }
 
 .brand-header {
@@ -256,7 +265,7 @@ h1 img {
 
 .result-message {
   color: #333;
-  font-family: "Avenir", "Proxima Nova", Arial, sans-serif;
+  font-family: "Nunito Sans", "Proxima Nova", Arial, sans-serif;
   font-size: 20px;
   font-weight: bold;
   margin: 0 0 20px;
