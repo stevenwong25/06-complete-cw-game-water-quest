@@ -463,12 +463,27 @@ button {
   transition: background-color 0.2s;
 }
 
+button:hover:not(:disabled),
+button:focus-visible:not(:disabled) {
+  background-color: #117A39;
+}
+
 #reset-game {
   background-color: #F5402C;
 }
 
+#reset-game:hover:not(:disabled),
+#reset-game:focus-visible:not(:disabled) {
+  background-color: #C83222;
+}
+
 #start-game.pause-state {
   background-color: #FF902A;
+}
+
+#start-game.pause-state:hover:not(:disabled),
+#start-game.pause-state:focus-visible:not(:disabled) {
+  background-color: #D96F16;
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {

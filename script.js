@@ -241,7 +241,7 @@ function startGameIntervals() {
   timerInterval = setInterval(() => {
     time -= 1;
     document.getElementById('timer').textContent = time;
-
+    
     if (activeDifficulty === difficultySettings.normal && time === 30) {
       clearInterval(spawnInterval);
       spawnInterval = setInterval(spawnItem, 600);
@@ -250,7 +250,7 @@ function startGameIntervals() {
       clearInterval(spawnInterval);
       spawnInterval = setInterval(spawnItem, 500);
     }
-
+    
     if (time === 0) {
       endGame();
     }
