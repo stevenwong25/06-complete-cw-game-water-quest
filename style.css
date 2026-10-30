@@ -171,6 +171,84 @@ h1 img {
   text-align: center;
 }
 
+.score-progress {
+  margin: 0 34px 30px;
+  padding: 18px 0 12px;
+}
+
+.progress-track {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  background-color: #FED8C1;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background-color: #2E9DF7;
+  transition: width 0.25s ease;
+}
+
+.milestone,
+.goal-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.milestone-one {
+  left: 33.333%;
+}
+
+.milestone-two {
+  left: 66.667%;
+}
+
+.milestone-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 3px solid #FFF7E1;
+  border-radius: 50%;
+  background-color: #77A8BB;
+  color: #FFF7E1;
+  box-shadow: 0 0 0 2px #77A8BB;
+  font-size: 15px;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.milestone.reached .milestone-icon {
+  background-color: #FFC907;
+  color: #333;
+  animation: milestone-pop 0.55s ease-out;
+}
+
+.goal-marker {
+  left: 100%;
+  color: #159A48;
+  font-size: 30px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.goal-marker.reached {
+  transform: translate(-50%, -50%) scale(1.35);
+}
+
+@keyframes milestone-pop {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.45);
+  }
+}
+
 .result-message {
   color: #333;
   font-family: "Avenir", "Proxima Nova", Arial, sans-serif;
@@ -438,6 +516,11 @@ button {
 
   .stats p {
     font-size: 15px;
+  }
+
+  .score-progress {
+    margin-right: 28px;
+    margin-left: 28px;
   }
 
   .water-can-wrapper {

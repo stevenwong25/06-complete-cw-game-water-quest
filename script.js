@@ -1,5 +1,6 @@
 // Game configuration and state variables
 const GOAL_SCORE = 5000;        // Total items needed to collect
+const MILESTONE_SCORES = [GOAL_SCORE / 3, (GOAL_SCORE * 2) / 3];
 const winningMessages = [
   'Amazing work! You reached the goal.',
   'You won! Congratulations!',
@@ -18,6 +19,7 @@ let timerInterval;          // Holds the interval for counting down the game
 let countdownInterval;       // Holds the interval for the resume countdown
 let time = 60;                 // Total time for the game in seconds
 let confettiPlayed = false;
+const reachedMilestones = new Set();
 
 function playPopSound() {
   const popSound = new Audio('sounds/pop.mp3');
@@ -31,6 +33,35 @@ function playThudSound() {
   thudSound.play().catch(error => {
     console.error('Unable to play the rock sound.', error);
   });
+}
+
+function updateProgress() {
+  const progress = Math.min(Math.max(currentScore / GOAL_SCORE, 0), 1) * 100;
+  document.getElementById('progressbar').style.width = `${progress}%`;
+
+  MILESTONE_SCORES.forEach((milestoneScore, index) => {
+    if (currentScore < milestoneScore || reachedMilestones.has(index)) return;
+
+    reachedMilestones.add(index);
+    const milestone = document.querySelector(`.milestone-${index + 1}`);
+    milestone.classList.add('reached');
+    milestone.addEventListener('animationend', () => {
+      milestone.classList.remove('reached');
+    }, { once: true });
+  });
+
+  if (currentScore >= GOAL_SCORE) {
+    document.getElementById('goal-marker').classList.add('reached');
+  }
+}
+
+function resetProgress() {
+  reachedMilestones.clear();
+  document.getElementById('progressbar').style.width = '0%';
+  document.querySelectorAll('.milestone').forEach(milestone => {
+    milestone.classList.remove('reached');
+  });
+  document.getElementById('goal-marker').classList.remove('reached');
 }
 
 // Creates the 3x3 game grid where items will appear
@@ -202,6 +233,7 @@ function resetGame() {
   confettiPlayed = false;
 
   document.getElementById('current-score').textContent = currentScore;
+  resetProgress();
   document.getElementById('timer').textContent = time;
   document.getElementById('achievements').textContent = '';
   document.getElementById('result-message').textContent = '';
@@ -255,6 +287,7 @@ document.querySelector('.game-grid').addEventListener('click', event => {
   }
   currentScore += isWaterCan ? 100 : -200;
   document.getElementById('current-score').textContent = currentScore;
+  updateProgress();
   shrinkWaterCan(item);
 });
 

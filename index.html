@@ -10,6 +10,7 @@
   <link rel="preload" as="audio" href="sounds/thud.mp3">
   <link href="style.css" rel="stylesheet" type="text/css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 </head>
 <body>
   <div class="page-layout">
@@ -20,7 +21,20 @@
       </div>
       <main>
         <h1>Water Quest</h1>
-        <div id="progressbar" class="progress-bar"></div>
+        <div class="score-progress" aria-label="Game progress">
+          <div class="progress-track">
+            <div id="progressbar" class="progress-fill"></div>
+            <div class="milestone milestone-one" aria-label="First milestone">
+              <span class="milestone-icon"><i class="bi bi-star-fill" aria-hidden="true"></i></span>
+            </div>
+            <div class="milestone milestone-two" aria-label="Second milestone">
+              <span class="milestone-icon"><i class="bi bi-star-fill" aria-hidden="true"></i></span>
+            </div>
+            <div id="goal-marker" class="goal-marker" aria-label="Goal">
+              <i class="bi bi-house-fill" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
         <p class="result-message" id="result-message"></p>
         <div class="stats">
           <p>Score: <span id="current-score">0</span></p>
