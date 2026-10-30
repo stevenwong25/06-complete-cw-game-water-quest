@@ -522,7 +522,7 @@ button:focus-visible:not(:disabled) {
   background-color: #D96F16;
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1032px) {
   body {
     padding: 36px;
   }
@@ -536,21 +536,39 @@ button:focus-visible:not(:disabled) {
   }
 
   .container {
+    order: 2;
     width: 100%;
     padding: 48px;
   }
 
-  .game-footer {
-    order: 3;
+  .sidebar {
+    order: 1;
+    width: 100%;
   }
 
-  .footer-placeholder {
-    order: 2;
+  .sidebar h2 {
+    font-size: 30px;
+  }
+
+  .sidebar h3,
+  .sidebar p,
+  .difficulty-label,
+  .difficulty-select {
+    font-size: 20px;
+  }
+
+  .game-footer {
+    order: 3;
+    font-size: 18px;
+  }
+
+  .footer-heading {
+    font-size: 18px;
   }
 
   .brand-header img {
     width: auto;
-    height: 24px;
+    height: 48px;
   }
 
   h1 {
@@ -588,10 +606,6 @@ button:focus-visible:not(:disabled) {
     font-size: 18px;
   }
 
-  .sidebar {
-    width: 100%;
-    order: 3;
-  }
 }
 
 @media (max-width: 767px) {
@@ -607,21 +621,25 @@ button:focus-visible:not(:disabled) {
   }
 
   .container {
+    order: 2;
     padding: 24px 18px;
   }
 
   .sidebar {
     width: 100%;
     padding: 20px;
-    order: 3;
+    order: 1;
   }
 
   .game-footer {
+    flex-direction: column;
+    flex-wrap: nowrap;
     order: 3;
+    row-gap: 12px;
   }
 
-  .footer-placeholder {
-    order: 2;
+  .footer-heading {
+    flex-basis: auto;
   }
 
   .stats p {
