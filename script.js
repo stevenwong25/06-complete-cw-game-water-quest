@@ -12,8 +12,10 @@ const losingMessages = [
 ];
 let currentScore = 0;         // Current number of items collected
 let gameActive = false;      // Tracks if game is currently running
+let gamePaused = false;       // Tracks if the active game is paused
 let spawnInterval;          // Holds the interval for spawning items
 let timerInterval;          // Holds the interval for counting down the game
+let countdownInterval;       // Holds the interval for the resume countdown
 let time = 60;                 // Total time for the game in seconds
 let confettiPlayed = false;
 
@@ -65,11 +67,16 @@ function spawnItem() {
   `;
 
   const item = randomCell.querySelector(`.${itemClass}`);
-  setTimeout(() => {
+  const removeItem = () => {
     if (item?.isConnected) {
+      if (gamePaused) {
+        setTimeout(removeItem, 1000);
+        return;
+      }
       shrinkWaterCan(item);
     }
-  }, 1000);
+  };
+  setTimeout(removeItem, 1000);
 }
 
 // Handles the shrinking animation and removal of a water can or rock
@@ -87,9 +94,16 @@ function startGame() {
   if (gameActive) return; // Prevent starting a new game if one is already active
   createGrid(); // Set up the game grid
   gameActive = true;
-  document.getElementById('start-game')?.remove();
+  gamePaused = false;
+  const gameButton = document.getElementById('start-game');
+  gameButton.textContent = 'Pause Game';
+  gameButton.classList.add('pause-state');
   time = 60;
   document.getElementById('timer').textContent = time;
+  startGameIntervals();
+}
+
+function startGameIntervals() {
   spawnInterval = setInterval(spawnItem, 750); // Spawn items every 750ms
   timerInterval = setInterval(() => {
     time -= 1;
@@ -110,10 +124,52 @@ function startGame() {
   }, 1000);
 }
 
+function pauseGame() {
+  gamePaused = true;
+  clearInterval(spawnInterval);
+  clearInterval(timerInterval);
+  document.querySelector('.game-grid').classList.add('paused');
+  const gameButton = document.getElementById('start-game');
+  gameButton.textContent = 'Continue Game';
+  gameButton.classList.remove('pause-state');
+}
+
+function continueGame() {
+  const grid = document.querySelector('.game-grid');
+  let countdown = 3;
+  const countdownOverlay = document.createElement('div');
+  countdownOverlay.className = 'countdown-overlay';
+  countdownOverlay.textContent = countdown;
+  grid.appendChild(countdownOverlay);
+  document.getElementById('start-game').disabled = true;
+
+  clearInterval(countdownInterval);
+  countdownInterval = setInterval(() => {
+    countdown -= 1;
+    countdownOverlay.textContent = countdown;
+
+    if (countdown === 0) {
+      clearInterval(countdownInterval);
+      countdownOverlay.remove();
+      grid.classList.remove('paused');
+      gamePaused = false;
+      startGameIntervals();
+      const gameButton = document.getElementById('start-game');
+      gameButton.disabled = false;
+      gameButton.textContent = 'Pause Game';
+      gameButton.classList.add('pause-state');
+    }
+  }, 1000);
+}
+
 function endGame() {
   gameActive = false; // Mark the game as inactive
+  gamePaused = false;
   clearInterval(spawnInterval); // Stop spawning water cans
   clearInterval(timerInterval); // Stop counting down the game
+  clearInterval(countdownInterval);
+  document.querySelector('.countdown-overlay')?.remove();
+  document.querySelector('.game-grid').classList.remove('paused');
   const messages = currentScore >= GOAL_SCORE ? winningMessages : losingMessages;
   const resultMessage = messages[Math.floor(Math.random() * messages.length)];
   document.getElementById('result-message').textContent = resultMessage;
@@ -138,7 +194,9 @@ function endGame() {
 function resetGame() {
   clearInterval(spawnInterval);
   clearInterval(timerInterval);
+  clearInterval(countdownInterval);
   gameActive = false;
+  gamePaused = false;
   currentScore = 0;
   time = 60;
   confettiPlayed = false;
@@ -149,12 +207,14 @@ function resetGame() {
   document.getElementById('result-message').textContent = '';
   document.getElementById('confetti-container')?.remove();
   document.getElementById('reset-game')?.remove();
+  document.querySelector('.countdown-overlay')?.remove();
+  document.querySelector('.game-grid').classList.remove('paused');
   createGrid();
 
   const startButton = document.createElement('button');
   startButton.id = 'start-game';
   startButton.textContent = 'Start Game';
-  startButton.addEventListener('click', startGame);
+  startButton.addEventListener('click', handleGameButtonClick);
   document.querySelector('.container').appendChild(startButton);
 }
 
@@ -181,7 +241,7 @@ function playConfetti() {
 
 // Updates points appropriately when the active water can or rock is clicked
 document.querySelector('.game-grid').addEventListener('click', event => {
-  if (!gameActive || !(event.target instanceof Element)) return;
+  if (!gameActive || gamePaused || !(event.target instanceof Element)) return;
 
   const item = event.target.closest('.water-can, .rock');
   if (!item) return;
@@ -198,5 +258,15 @@ document.querySelector('.game-grid').addEventListener('click', event => {
   shrinkWaterCan(item);
 });
 
-// Set up click handler for the start button
-document.getElementById('start-game').addEventListener('click', startGame);
+function handleGameButtonClick() {
+  if (!gameActive) {
+    startGame();
+  } else if (gamePaused) {
+    continueGame();
+  } else {
+    pauseGame();
+  }
+}
+
+// Set up click handler for the game control button
+document.getElementById('start-game').addEventListener('click', handleGameButtonClick);

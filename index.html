@@ -11,23 +11,38 @@
   <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-  <div class="container">
-    <div class="brand-header">
-      <img src="img/water-can-transparent.png" alt="charity: water logo">
-      <span>charity: water</span>
-    </div>
-    <main>
-      <h1>Water Quest</h1>
-      <p class="game-instructions">Earn 5,000 points to reach the goal!</p>
-      <p class="result-message" id="result-message"></p>
-      <div class="stats">
-        <p>Score: <span id="current-score">0</span></p>
-        <p>Time Left: <span id="timer">60</span>s</p>
+  <div class="page-layout">
+    <div class="container">
+      <div class="brand-header">
+        <img src="img/water-can-transparent.png" alt="charity: water logo">
+        <span>charity: water</span>
       </div>
-      <div id="achievements" class="achievement"></div>
-      <div class="game-grid"></div>
-      <button id="start-game">Start Game</button>
-    </main>
+      <main>
+        <h1>Water Quest</h1>
+        <div id="progressbar" class="progress-bar"></div>
+        <p class="result-message" id="result-message"></p>
+        <div class="stats">
+          <p>Score: <span id="current-score">0</span></p>
+          <p>Time Left: <span id="timer">60</span>s</p>
+        </div>
+        <div id="achievements" class="achievement"></div>
+        <div class="game-grid"></div>
+        <button id="start-game">Start Game</button>
+      </main>
+    </div>
+    <aside class="sidebar">
+      <h2>How to play</h2>
+      <p>Collect the water cans before time runs out.</p>
+      <div class="sidebar-section">
+        <h3>Scoring</h3>
+        <p><span class="score-icon water-can-icon" aria-hidden="true"></span> Water can <strong>+100</strong></p>
+        <p><span class="score-icon rock-icon" aria-hidden="true"></span> Rock <strong>-200</strong></p>
+      </div>
+      <div class="sidebar-section">
+        <h3>Goal</h3>
+        <p>Reach <strong>5,000 points</strong> to win!</p>
+      </div>
+    </aside>
   </div>
   <script src="script.js"></script>
 </body>
