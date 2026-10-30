@@ -51,12 +51,14 @@ body {
 
 .game-footer {
   grid-column: 2;
-  grid-row: 2;
+  grid-row: 2 / span 2;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-evenly;
   align-items: center;
   width: 100%;
   padding: 18px 20px;
+  row-gap: 22px;
   border-radius: 8px;
   background-color: #FED8C1;
   color: #159A48;
@@ -64,15 +66,32 @@ body {
   font-weight: bold;
 }
 
+.footer-placeholder {
+  flex-basis: 100%;
+  margin: 0;
+  color: #2E9DF7;
+  font-size: 15px;
+  text-align: center;
+}
+
 .game-footer a {
-  color: inherit;
+  color: #2E9DF7;
   text-decoration: none;
+}
+
+.game-footer .donate-link {
+  color: #159A48;
 }
 
 .game-footer a:hover,
 .game-footer a:focus-visible {
   color: #2E9DF7;
   text-decoration: underline;
+}
+
+.game-footer .donate-link:hover,
+.game-footer .donate-link:focus-visible {
+  color: #D96F16;
 }
 
 .sidebar {
@@ -505,6 +524,10 @@ button:focus-visible:not(:disabled) {
   }
 
   .game-footer {
+    order: 3;
+  }
+
+  .footer-placeholder {
     order: 2;
   }
 
@@ -576,6 +599,10 @@ button:focus-visible:not(:disabled) {
   }
 
   .game-footer {
+    order: 3;
+  }
+
+  .footer-placeholder {
     order: 2;
   }
 
