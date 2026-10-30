@@ -1,6 +1,30 @@
 // Game configuration and state variables
-const GOAL_SCORE = 5000;        // Total items needed to collect
-const MILESTONE_SCORES = [GOAL_SCORE / 3, (GOAL_SCORE * 2) / 3];
+const difficultySettings = {
+  easy: {
+    goalScore: 4000,
+    startingTime: 60,
+    rockPenalty: 100,
+    spawnRate: 750,
+    expirationTime: 1750,
+    rockChance: 0.15
+  },
+  normal: {
+    goalScore: 5000,
+    startingTime: 60,
+    rockPenalty: 200,
+    spawnRate: 750,
+    expirationTime: 1000,
+    rockChance: 0.2
+  },
+  hard: {
+    goalScore: 7000,
+    startingTime: 80,
+    rockPenalty: 300,
+    spawnRate: 600,
+    expirationTime: 750,
+    rockChance: 0.35
+  }
+};
 const winningMessages = [
   'Amazing work! You reached the goal.',
   'You won! Congratulations!',
@@ -20,6 +44,7 @@ let countdownInterval;       // Holds the interval for the resume countdown
 let time = 60;                 // Total time for the game in seconds
 let confettiPlayed = false;
 const reachedMilestones = new Set();
+let activeDifficulty = difficultySettings.normal;
 const audioContext = new AudioContext();
 const soundBuffers = {};
 
@@ -66,11 +91,23 @@ function setDifficultyEnabled(enabled) {
   document.getElementById('difficulty').disabled = !enabled;
 }
 
+function updateDifficultyDisplay() {
+  const selectedDifficulty = document.getElementById('difficulty').value;
+  const settings = difficultySettings[selectedDifficulty];
+  document.getElementById('goal-score').textContent = `${settings.goalScore.toLocaleString()} points`;
+  document.getElementById('rock-penalty').textContent = `-${settings.rockPenalty}`;
+
+  if (!gameActive) {
+    document.getElementById('timer').textContent = settings.startingTime;
+  }
+}
+
 function updateProgress() {
-  const progress = Math.min(Math.max(currentScore / GOAL_SCORE, 0), 1) * 100;
+  const progress = Math.min(Math.max(currentScore / activeDifficulty.goalScore, 0), 1) * 100;
   document.getElementById('progressbar').style.width = `${progress}%`;
 
-  MILESTONE_SCORES.forEach((milestoneScore, index) => {
+  [activeDifficulty.goalScore / 3, (activeDifficulty.goalScore * 2) / 3]
+    .forEach((milestoneScore, index) => {
     const milestone = document.querySelector(`.milestone-${index + 1}`);
     const milestoneReached = currentScore >= milestoneScore;
 
@@ -87,7 +124,7 @@ function updateProgress() {
   });
 
   const goalMarker = document.getElementById('goal-marker');
-  if (currentScore >= GOAL_SCORE) {
+  if (currentScore >= activeDifficulty.goalScore) {
     goalMarker.classList.add('reached');
   } else {
     goalMarker.classList.remove('reached');
@@ -101,6 +138,20 @@ function resetProgress() {
     milestone.classList.remove('reached');
   });
   document.getElementById('goal-marker').classList.remove('reached');
+}
+
+function getRockChance() {
+  if (activeDifficulty === difficultySettings.easy) {
+    return time < 55 ? activeDifficulty.rockChance : 0;
+  }
+
+  if (activeDifficulty === difficultySettings.hard) {
+    return activeDifficulty.rockChance;
+  }
+
+  if (time < 20) return 0.35;
+  if (time < 55) return activeDifficulty.rockChance;
+  return 0;
 }
 
 // Creates the 3x3 game grid where items will appear
@@ -127,7 +178,7 @@ function spawnItem() {
 
   // Select a random empty cell from the grid to place the item
   const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-  const rockChance = time < 20 ? 0.35 : time < 55 ? 0.2 : 0;
+  const rockChance = getRockChance();
   const itemClass = Math.random() < rockChance ? 'rock' : 'water-can';
 
   randomCell.innerHTML = `
@@ -140,13 +191,13 @@ function spawnItem() {
   const removeItem = () => {
     if (item?.isConnected) {
       if (gamePaused) {
-        setTimeout(removeItem, 1000);
+        setTimeout(removeItem, activeDifficulty.expirationTime);
         return;
       }
       shrinkWaterCan(item);
     }
   };
-  setTimeout(removeItem, 1000);
+  setTimeout(removeItem, activeDifficulty.expirationTime);
 }
 
 // Handles the shrinking animation and removal of a water can or rock
@@ -162,6 +213,8 @@ function shrinkWaterCan(waterCan) {
 // Initializes and starts a new game
 function startGame() {
   if (gameActive) return; // Prevent starting a new game if one is already active
+  const selectedDifficulty = document.getElementById('difficulty').value;
+  activeDifficulty = difficultySettings[selectedDifficulty];
   createGrid(); // Set up the game grid
   gameActive = true;
   gamePaused = false;
@@ -169,22 +222,25 @@ function startGame() {
   const gameButton = document.getElementById('start-game');
   gameButton.textContent = 'Pause Game';
   gameButton.classList.add('pause-state');
-  time = 60;
+  time = activeDifficulty.startingTime;
   document.getElementById('timer').textContent = time;
+  document.getElementById('goal-score').textContent = `${activeDifficulty.goalScore.toLocaleString()} points`;
+  document.getElementById('rock-penalty').textContent = `-${activeDifficulty.rockPenalty}`;
+  resetProgress();
   startGameIntervals();
 }
 
 function startGameIntervals() {
-  spawnInterval = setInterval(spawnItem, 750); // Spawn items every 750ms
+  spawnInterval = setInterval(spawnItem, activeDifficulty.spawnRate);
   timerInterval = setInterval(() => {
     time -= 1;
     document.getElementById('timer').textContent = time;
 
-    if (time === 30) {
+    if (activeDifficulty === difficultySettings.normal && time === 30) {
       clearInterval(spawnInterval);
       spawnInterval = setInterval(spawnItem, 600);
     }
-    else if (time === 15) {
+    else if (activeDifficulty === difficultySettings.normal && time === 15) {
       clearInterval(spawnInterval);
       spawnInterval = setInterval(spawnItem, 500);
     }
@@ -236,16 +292,15 @@ function continueGame() {
 function endGame() {
   gameActive = false; // Mark the game as inactive
   gamePaused = false;
-  setDifficultyEnabled(true);
   clearInterval(spawnInterval); // Stop spawning water cans
   clearInterval(timerInterval); // Stop counting down the game
   clearInterval(countdownInterval);
   document.querySelector('.countdown-overlay')?.remove();
   document.querySelector('.game-grid').classList.remove('paused');
-  const messages = currentScore >= GOAL_SCORE ? winningMessages : losingMessages;
+  const messages = currentScore >= activeDifficulty.goalScore ? winningMessages : losingMessages;
   const resultMessage = messages[Math.floor(Math.random() * messages.length)];
   document.getElementById('result-message').textContent = resultMessage;
-  if (currentScore >= GOAL_SCORE && !confettiPlayed) {
+  if (currentScore >= activeDifficulty.goalScore && !confettiPlayed) {
     confettiPlayed = true;
     playConfetti();
   }
@@ -275,7 +330,7 @@ function resetGame() {
 
   document.getElementById('current-score').textContent = currentScore;
   resetProgress();
-  document.getElementById('timer').textContent = time;
+  updateDifficultyDisplay();
   document.getElementById('achievements').textContent = '';
   document.getElementById('result-message').textContent = '';
   document.getElementById('confetti-container')?.remove();
@@ -326,7 +381,7 @@ document.querySelector('.game-grid').addEventListener('click', event => {
   } else {
     playThudSound();
   }
-  currentScore += isWaterCan ? 100 : -200;
+  currentScore += isWaterCan ? 100 : -activeDifficulty.rockPenalty;
   document.getElementById('current-score').textContent = currentScore;
   shrinkWaterCan(item);
   updateProgress();
@@ -344,3 +399,4 @@ function handleGameButtonClick() {
 
 // Set up click handler for the game control button
 document.getElementById('start-game').addEventListener('click', handleGameButtonClick);
+document.getElementById('difficulty').addEventListener('change', updateDifficultyDisplay);
