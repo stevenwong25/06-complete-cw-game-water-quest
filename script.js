@@ -17,6 +17,20 @@ let timerInterval;          // Holds the interval for counting down the game
 let time = 60;                 // Total time for the game in seconds
 let confettiPlayed = false;
 
+function playPopSound() {
+  const popSound = new Audio('sounds/pop.mp3');
+  popSound.play().catch(error => {
+    console.error('Unable to play the water-can sound.', error);
+  });
+}
+
+function playThudSound() {
+  const thudSound = new Audio('sounds/thud.mp3');
+  thudSound.play().catch(error => {
+    console.error('Unable to play the rock sound.', error);
+  });
+}
+
 // Creates the 3x3 game grid where items will appear
 function createGrid() {
   const grid = document.querySelector('.game-grid');
@@ -173,7 +187,13 @@ document.querySelector('.game-grid').addEventListener('click', event => {
   if (!item) return;
   if (item.classList.contains('shrinking')) return;
 
-  currentScore += item.classList.contains('rock') ? -200 : 100;
+  const isWaterCan = item.classList.contains('water-can');
+  if (isWaterCan) {
+    playPopSound();
+  } else {
+    playThudSound();
+  }
+  currentScore += isWaterCan ? 100 : -200;
   document.getElementById('current-score').textContent = currentScore;
   shrinkWaterCan(item);
 });
