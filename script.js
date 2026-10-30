@@ -2,7 +2,7 @@
 const difficultySettings = {
   easy: {
     goalScore: 4000,
-    startingTime: 60,
+    startingTime: 10,
     rockPenalty: 100,
     spawnRate: 750,
     expirationTime: 1750,
@@ -26,7 +26,7 @@ const difficultySettings = {
   }
 };
 const winningMessages = [
-  'Amazing work! You reached the goal.',
+  'Amazing work! You reached the goal!',
   'You won! Congratulations!',
   'Great job! You did it!'
 ];
@@ -34,6 +34,16 @@ const losingMessages = [
   'Keep going! Try again to reach the goal.',
   'Almost there! Play again and collect more water cans.',
   'Good effort! You can make it next time.'
+];
+const firstMilestoneMessages = [
+  'Every drop counts! Keep collecting!',
+  'You are just getting started. Keep going!',
+  'Keep collecting to reach the first milestone!'
+];
+const secondMilestoneMessages = [
+  'Nice progress! You are getting closer to the goal.',
+  'Great momentum! Keep collecting water cans.',
+  'You are getting closer. Keep up the good work!'
 ];
 let currentScore = 0;         // Current number of items collected
 let gameActive = false;      // Tracks if game is currently running
@@ -303,7 +313,20 @@ function endGame() {
   clearInterval(countdownInterval);
   document.querySelector('.countdown-overlay')?.remove();
   document.querySelector('.game-grid')?.remove();
-  const messages = currentScore >= activeDifficulty.goalScore ? winningMessages : losingMessages;
+  const firstMilestone = activeDifficulty.goalScore / 3;
+  const secondMilestone = (activeDifficulty.goalScore * 2) / 3;
+  let messages;
+
+  if (currentScore >= activeDifficulty.goalScore) {
+    messages = winningMessages;
+  } else if (currentScore >= secondMilestone) {
+    messages = losingMessages;
+  } else if (currentScore >= firstMilestone) {
+    messages = secondMilestoneMessages;
+  } else {
+    messages = firstMilestoneMessages;
+  }
+
   const resultMessage = messages[Math.floor(Math.random() * messages.length)];
   document.getElementById('result-message').textContent = resultMessage;
   if (currentScore >= activeDifficulty.goalScore && !confettiPlayed) {
