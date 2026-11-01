@@ -360,18 +360,17 @@ function resetGame() {
   document.getElementById('current-score').textContent = currentScore;
   resetProgress();
   updateDifficultyDisplay();
-  document.getElementById('achievements').textContent = '';
   document.getElementById('result-message').textContent = '';
   document.getElementById('confetti-container')?.remove();
   document.getElementById('reset-game')?.remove();
   document.querySelector('.countdown-overlay')?.remove();
-  createGrid();
 
   const startButton = document.createElement('button');
   startButton.id = 'start-game';
   startButton.textContent = 'Start Game';
   startButton.addEventListener('click', handleGameButtonClick);
-  document.querySelector('.container').appendChild(startButton);
+  document.querySelector('main').appendChild(startButton);
+  createGrid();
 }
 
 function playConfetti() {
